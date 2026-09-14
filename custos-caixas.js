@@ -1,29 +1,93 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const supabase=createClient("https://c--09586474-253e-4035-b48c-481591adc286-prod.lovable.cloud","sb_publishable_4zkSUbnHOH5kawdNM3d6lQ_xd5Do3bb");
-const TYPES=['PP','P','M'], BASE={PP:1575,P:5550,M:1200}, PREFIX='__CAIXA_CUSTO__';
-const brl=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}), esc=s=>String(s??'').replace(/[&<>\'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const money=s=>Number(String(s||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,''))||0;
-const month=k=>{const [y,m]=String(k||'').slice(0,7).split('-');return y&&m?new Date(+y,+m-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'}):'—'};
-function meta(r){const o=String(r.observacao||'');if(!o.startsWith(PREFIX))return null;try{return JSON.parse(o.slice(PREFIX.length))}catch{return null}}
-function encoded(tipo,caixas,nota){return PREFIX+JSON.stringify({tipo,caixas:Number(caixas)||0,nota:nota||''})}
-function stock(rows,entries){const s={...BASE};entries.forEach(x=>s[x.tipo_caixa]!=null&&(s[x.tipo_caixa]+=Number(x.total_caixas||0)));rows.forEach(x=>s[x.tipo_caixa]!=null&&(s[x.tipo_caixa]-=Number(x.total_caixas||0)));return s}
-async function render(pane){
- pane.innerHTML='<div class="section-card"><h2>Custos das caixas</h2><p class="hint">Carregando informações financeiras...</p></div>';
- const [cr,rr,er]=await Promise.all([supabase.from('compras_controle').select('*').order('competencia',{ascending:false}).order('created_at',{ascending:false}),supabase.from('retiradas').select('tipo_caixa,total_caixas'),supabase.from('entradas_estoque').select('tipo_caixa,total_caixas')]);
- if(cr.error||rr.error||er.error){pane.innerHTML=`<div class="section-card"><h2>Custos das caixas</h2><div class="errorbox">Não foi possível carregar os custos: ${esc((cr.error||rr.error||er.error).message)}</div></div>`;return}
- const compras=cr.data||[], s=stock(rr.data||[],er.data||[]), usable=compras.map(c=>({c,m:meta(c)})).filter(x=>x.m&&TYPES.includes(x.m.tipo)&&Number(x.m.caixas)>0&&Number(x.c.valor)>0), per={};
- TYPES.forEach(t=>{const a=usable.filter(x=>x.m.tipo===t),v=a.reduce((z,x)=>z+Number(x.c.valor||0),0),q=a.reduce((z,x)=>z+Number(x.m.caixas||0),0);per[t]={v,q,avg:q?v/q:0}});
- const total=usable.reduce((z,x)=>z+Number(x.c.valor||0),0), saldo=TYPES.reduce((z,t)=>z+Math.max(0,s[t]),0), valorSaldo=TYPES.reduce((z,t)=>z+Math.max(0,s[t])*per[t].avg,0), byMonth={};
- compras.forEach(c=>{const k=String(c.competencia||'').slice(0,7);if(k)byMonth[k]=(byMonth[k]||0)+Number(c.valor||0)});
- pane.innerHTML=`<div class="section-card cost-hero"><div><div class="admin-kicker">HUB • FINANCEIRO</div><h2>Controle de custos das caixas</h2><p class="hint">Compras históricas entram no financeiro e <b>não alteram o estoque</b>.</p></div><span class="cost-safe">✓ Estoque protegido</span></div>
- <div class="cards report-cards"><div class="metric neutral"><span>COMPRAS CADASTRADAS</span><strong>${brl(total)}</strong><small>Histórico financeiro</small></div><div class="metric neutral"><span>ESTOQUE ATUAL</span><strong>${saldo}</strong><small>Caixas disponíveis</small></div><div class="metric neutral"><span>VALOR ESTIMADO DO ESTOQUE</span><strong>${brl(valorSaldo)}</strong><small>Pelo custo médio cadastrado</small></div></div>
- <div class="section-card"><h2>Registrar compra passada</h2><div class="filters"><div><label>Mês da compra</label><input id="cxMes" type="month"></div><div><label>Tipo de caixa</label><select id="cxTipo">${TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div><label>Unidade de compra</label><select id="cxUnidade"><option value="unidade">Unidade</option></select></div><div><label>Quantidade comprada</label><input id="cxQtd" type="number" min="1" value="1"></div><div><label>Valor total</label><input id="cxValor" inputmode="decimal" placeholder="Ex.: 1.250,00"></div><div><label>Fornecedor</label><input id="cxFornecedor" placeholder="Opcional"></div><div><label>NF</label><input id="cxNF" placeholder="Opcional"></div><div><label>Observação</label><input id="cxObs" placeholder="Opcional"></div><button class="export-btn" id="cxSalvar">REGISTRAR COMPRA</button></div><p class="hint">A quantidade é registrada diretamente em unidades de caixas.</p></div>
- <div class="section-card"><h2>Custo médio e valor do saldo</h2><div class="table-scroll"><table class="table"><thead><tr><th>Tipo</th><th>Unidades compradas</th><th>Valor informado</th><th>Custo médio/unidade</th><th>Saldo atual</th><th>Valor estimado saldo</th></tr></thead><tbody>${TYPES.map(t=>`<tr><td><b>${t}</b></td><td>${per[t].q||'—'}</td><td>${per[t].v?brl(per[t].v):'—'}</td><td>${per[t].avg?`<b>${brl(per[t].avg)}</b>`:'—'}</td><td>${s[t]}</td><td>${per[t].avg?`<b>${brl(Math.max(0,s[t])*per[t].avg)}</b>`:'—'}</td></tr>`).join('')}</tbody></table></div></div>
- <div class="section-card"><h2>Compras por mês</h2><div class="table-scroll"><table class="table"><thead><tr><th>Mês</th><th>Valor total</th></tr></thead><tbody>${Object.entries(byMonth).sort((a,b)=>b[0].localeCompare(a[0])).map(([m,v])=>`<tr><td><b>${month(m)}</b></td><td><b>${brl(v)}</b></td></tr>`).join('')||'<tr><td colspan="2" class="empty">Nenhuma compra cadastrada.</td></tr>'}</tbody></table></div></div>
- <div class="section-card"><h2>Histórico de compras</h2><div class="table-scroll"><table class="table"><thead><tr><th>Mês</th><th>Tipo</th><th>Unidades</th><th>Valor</th><th>Custo/unidade</th><th>Fornecedor</th><th>NF</th><th>Observação</th><th>Ação</th></tr></thead><tbody>${compras.map(c=>{const m=meta(c),q=m?.caixas||0;return `<tr><td>${month(c.competencia)}</td><td>${m?.tipo||'—'}</td><td>${q||'—'}</td><td><b>${brl(c.valor)}</b></td><td>${q?brl(Number(c.valor||0)/q):'—'}</td><td>${esc(c.fornecedor||'—')}</td><td>${esc(c.nf||'—')}</td><td>${esc(m?.nota||'—')}</td><td><button class="filter-btn cxDel" data-id="${c.id}">Excluir</button></td></tr>`}).join('')||'<tr><td colspan="9" class="empty">Nenhuma compra cadastrada.</td></tr>'}</tbody></table></div></div>`;
- const mes=pane.querySelector('#cxMes');if(mes)mes.value=new Date().toISOString().slice(0,7);
- pane.querySelector('#cxSalvar').onclick=async()=>{const competencia=mes.value,tipo=pane.querySelector('#cxTipo').value,q=Math.max(1,Number(pane.querySelector('#cxQtd').value||1)),valor=money(pane.querySelector('#cxValor').value);if(!competencia)return alert('Informe o mês da compra.');if(!valor)return alert('Informe o valor total da compra.');const fornecedor=pane.querySelector('#cxFornecedor').value.trim(),nf=pane.querySelector('#cxNF').value.trim(),nota=pane.querySelector('#cxObs').value.trim();const {error}=await supabase.from('compras_controle').insert({competencia:competencia+'-01',valor,fornecedor:fornecedor||null,nf:nf||null,observacao:encoded(tipo,q,nota)});if(error)return alert('Não foi possível salvar: '+error.message);alert('Compra registrada sem alterar o estoque.');render(pane)};
- pane.querySelectorAll('.cxDel').forEach(b=>b.onclick=async()=>{if(!confirm('Excluir esta compra?'))return;const {error}=await supabase.from('compras_controle').delete().eq('id',b.dataset.id);if(error)return alert(error.message);render(pane)});
+const TYPES=['PP','P','M'];
+const BASE={PP:1575,P:5550,M:1200};
+const PREFIX='__CAIXA_CUSTO__';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>\'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const brl=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const parseMoney=s=>Number(String(s||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,''))||0;
+const cap=s=>s?String(s).charAt(0).toUpperCase()+String(s).slice(1):s;
+const monthLabel=k=>{const [y,m]=String(k||'').slice(0,7).split('-');if(!y||!m)return '—';return cap(new Date(+y,+m-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'}));};
+function meta(row){const o=String(row.observacao||'');if(!o.startsWith(PREFIX))return null;try{return JSON.parse(o.slice(PREFIX.length))}catch{return null}}
+function note(row){const m=meta(row);return m?.nota||(!String(row.observacao||'').startsWith(PREFIX)?row.observacao:'')||'—'}
+function encode({tipo,caixas,nota}){return PREFIX+JSON.stringify({tipo,caixas:Number(caixas)||0,nota:nota||''})}
+function stock(rows,entries){const s={...BASE};entries.forEach(x=>{if(s[x.tipo_caixa]!=null)s[x.tipo_caixa]+=Number(x.total_caixas||0)});rows.forEach(x=>{if(s[x.tipo_caixa]!=null)s[x.tipo_caixa]-=Number(x.total_caixas||0)});return s}
+function stats(compras){const usable=compras.map(c=>({c,m:meta(c)})).filter(x=>x.m&&TYPES.includes(x.m.tipo)&&Number(x.m.caixas)>0&&Number(x.c.valor)>0);const perType={};for(const t of TYPES){const a=usable.filter(x=>x.m.tipo===t);const value=a.reduce((s,x)=>s+Number(x.c.valor||0),0);const qty=a.reduce((s,x)=>s+Number(x.m.caixas||0),0);perType[t]={value,qty,avg:qty?value/qty:0};}return {usable,perType,total:usable.reduce((s,x)=>s+Number(x.c.valor||0),0)}}
+
+const css=document.createElement('style');
+css.textContent=`
+.costs-wrap{display:grid;gap:16px}.costs-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}.costs-intro h2{margin:0 0 4px}.costs-intro p{margin:0;color:#836a64}.costs-pill{padding:8px 12px;border-radius:999px;background:#f1e2dc;color:#a85f52;font-weight:900;font-size:11px;white-space:nowrap}.costs-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.cost-kpi{background:#fff;border:1px solid #eadbd5;border-radius:16px;padding:17px 18px;min-height:88px}.cost-kpi.primary{background:#c77969;color:white;border-color:#c77969}.cost-kpi span{display:block;font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;margin-bottom:7px}.cost-kpi strong{display:block;font-size:25px;line-height:1.1}.cost-kpi small{display:block;margin-top:7px;color:#846d67}.cost-kpi.primary small{color:#fff}.cost-main-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,.95fr);gap:16px;align-items:start}.cost-box{background:#fff;border:1px solid #eadbd5;border-radius:16px;overflow:hidden}.cost-box-head{padding:17px 18px;border-bottom:1px solid #eee0db;display:flex;justify-content:space-between;align-items:center;gap:12px}.cost-box-head h3{margin:0;font-size:20px}.cost-badge{font-size:10px;font-weight:900;background:#edf7f0;color:#2f7b4f;border-radius:8px;padding:7px 10px}.cost-form-head{padding:11px 16px;background:#f3e4df;color:#9f5649;font-size:10px;font-weight:900;letter-spacing:.06em}.cost-form-body{padding:18px}.cost-form-body h3{margin:0 0 8px;font-size:20px}.cost-form-body p{margin:0 0 16px;color:#846d67;font-size:12px;line-height:1.45}.cost-grid-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.cost-grid-form .full{grid-column:1/-1}.cost-grid-form label{display:block;margin-bottom:6px;font-size:10px;font-weight:900;color:#5d4741;text-transform:uppercase}.cost-grid-form input,.cost-grid-form select,.cost-grid-form textarea{width:100%;box-sizing:border-box;border:1px solid #dfcdc6;border-radius:10px;padding:11px 12px;background:#fff;color:#2f2927}.cost-grid-form textarea{min-height:74px;resize:vertical}.cost-safe{margin-top:10px;padding:10px 12px;border-radius:10px;background:#eef7f0;color:#38704c;font-size:11px;font-weight:800}.cost-save{width:100%;margin-top:12px;border:0;border-radius:10px;padding:13px;background:#b76455;color:white;font-weight:900;cursor:pointer}.cost-table{width:100%;border-collapse:collapse}.cost-table th{background:#f2ece9;color:#5a4540;text-align:left;font-size:10px;padding:12px}.cost-table td{padding:13px 12px;border-top:1px solid #eee4df;font-size:12px}.cost-table .money{color:#b76455;font-weight:900}.cost-history{padding:16px}.cost-history-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.cost-history-top h3{margin:0;font-size:20px}.cost-history-top span{font-size:11px;color:#b76455;font-weight:900}.cost-empty{padding:24px;text-align:center;color:#8c746d}.cxDel{border:0;background:transparent;color:#b76455;font-weight:900;cursor:pointer}
+@media(max-width:1050px){.costs-kpis{grid-template-columns:1fr 1fr}.cost-main-grid{grid-template-columns:1fr}}@media(max-width:650px){.costs-kpis{grid-template-columns:1fr}.cost-grid-form{grid-template-columns:1fr}.cost-grid-form .full{grid-column:auto}.costs-intro{flex-direction:column}}
+`;
+document.head.appendChild(css);
+
+async function load(){
+  if(location.pathname.replace(/\/+$/,'')!=='/admin')return;
+  const tabs=$('.tabs');
+  if(!tabs){setTimeout(load,200);return}
+  let tab=$('#custosCaixasTab');
+  if(!tab){tab=document.createElement('button');tab.className='tab';tab.id='custosCaixasTab';tab.dataset.tab='custos-caixas';tab.textContent='Custos das caixas';tabs.appendChild(tab)}
+  const content=$('#content');if(!content){setTimeout(load,200);return}
+  let pane=content.querySelector('[data-pane="custos-caixas"]');
+  if(!pane){pane=document.createElement('section');pane.className='tabpane';pane.dataset.pane='custos-caixas';pane.hidden=true;content.appendChild(pane)}
+  tab.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tabpane').forEach(x=>x.hidden=true);tab.classList.add('active');pane.hidden=false;render(pane)};
+  await render(pane);
 }
-function mount(){if(!location.pathname.toLowerCase().startsWith('/admin'))return;const tabs=document.querySelector('.tabs'),shell=document.querySelector('.admin-shell');if(!tabs||!shell)return setTimeout(mount,150);let tab=document.querySelector('#custosCaixasTab');if(!tab){tab=document.createElement('button');tab.className='tab';tab.id='custosCaixasTab';tab.textContent='Custos das caixas';tabs.appendChild(tab)}let pane=document.querySelector('#custosCaixasStandalone');if(!pane){pane=document.createElement('section');pane.id='custosCaixasStandalone';pane.hidden=true;shell.appendChild(pane)}tab.onclick=async e=>{e.preventDefault();e.stopPropagation();document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));tab.classList.add('active');const content=document.querySelector('#content');if(content)content.hidden=true;pane.hidden=false;await render(pane)};tabs.querySelectorAll('.tab:not(#custosCaixasTab)').forEach(b=>b.addEventListener('click',()=>{pane.hidden=true;const content=document.querySelector('#content');if(content)content.hidden=false}));}
-addEventListener('DOMContentLoaded',mount);setTimeout(mount,100);setTimeout(mount,700);
+
+async function render(pane){
+  pane.innerHTML='<div class="section-card">Carregando custos...</div>';
+  const [cr,rr,er]=await Promise.all([
+    supabase.from('compras_controle').select('*').order('competencia',{ascending:false}).order('created_at',{ascending:false}),
+    supabase.from('retiradas').select('tipo_caixa,total_caixas,created_at'),
+    supabase.from('entradas_estoque').select('tipo_caixa,total_caixas')
+  ]);
+  if(cr.error||rr.error||er.error){pane.innerHTML='<div class="section-card">Não foi possível carregar os dados de custos.</div>';return}
+  const compras=cr.data||[], retiradas=rr.data||[], entradas=er.data||[], s=stock(retiradas,entradas), st=stats(compras);
+  const now=new Date(), monthKey=now.toISOString().slice(0,7);
+  const monthCompras=compras.filter(c=>String(c.competencia||'').slice(0,7)===monthKey).reduce((a,c)=>a+Number(c.valor||0),0);
+  const consumoMes=retiradas.filter(r=>String(r.created_at||'').slice(0,7)===monthKey).reduce((a,r)=>a+Number(r.total_caixas||0),0);
+  const weightedQty=TYPES.reduce((a,t)=>a+st.perType[t].qty,0), weightedValue=TYPES.reduce((a,t)=>a+st.perType[t].value,0), avgAll=weightedQty?weightedValue/weightedQty:0;
+  const consumoValor=avgAll?consumoMes*avgAll:0;
+  const totalSaldo=TYPES.reduce((a,t)=>a+Math.max(0,s[t]),0);
+  const totalValor=TYPES.reduce((a,t)=>a+Math.max(0,s[t])*(st.perType[t].avg||avgAll||0),0);
+
+  pane.innerHTML=`<div class="costs-wrap">
+    <div class="costs-intro"><div><h2>Controle de custos das caixas</h2><p>Cadastre compras atuais ou antigas para formar o histórico de custo. <b>Compras históricas não alteram o estoque.</b></p></div><div class="costs-pill">Financeiro • não altera estoque</div></div>
+    <div class="costs-kpis">
+      <div class="cost-kpi primary"><span>Total investido no histórico</span><strong>${brl(st.total)}</strong><small>${st.usable.length} lançamento${st.usable.length===1?'':'s'}</small></div>
+      <div class="cost-kpi"><span>Compras em ${monthLabel(monthKey)}</span><strong>${brl(monthCompras)}</strong><small>somente financeiro</small></div>
+      <div class="cost-kpi"><span>Custo do consumo no mês</span><strong>${brl(consumoValor)}</strong><small>${avgAll?'estimativa por custo médio':'cadastre compras para calcular'}</small></div>
+      <div class="cost-kpi"><span>Valor estimado do estoque</span><strong>${brl(totalValor)}</strong><small>${totalSaldo} caixas em saldo</small></div>
+    </div>
+    <div class="cost-main-grid">
+      <div class="cost-box"><div class="cost-box-head"><h3>◷ Custo médio por caixa</h3><div class="cost-badge">Calculado pelas compras cadastradas</div></div>
+        <table class="cost-table"><thead><tr><th>CAIXA</th><th>CUSTO MÉDIO/UNIDADE</th><th>ESTOQUE ATUAL</th><th>VALOR ESTIMADO SALDO</th></tr></thead><tbody>
+          ${TYPES.map(t=>{const a=st.perType[t].avg||avgAll||0;return `<tr><td><b>${t}</b></td><td class="money">${a?brl(a):'—'}</td><td>${s[t]}</td><td>${a?brl(Math.max(0,s[t])*a):'—'}</td></tr>`}).join('')}
+        </tbody></table>
+      </div>
+      <div class="cost-box"><div class="cost-form-head">FINANCEIRO · NÃO ALTERA ESTOQUE</div><div class="cost-form-body"><h3>◷ Registrar compra passada</h3><p>Use para notas/compras de meses anteriores. Esse lançamento entra nos indicadores de custo, mas não soma caixas ao estoque.</p>
+        <div class="cost-grid-form">
+          <div class="full"><label>Competência</label><input id="cxMes" type="month"></div>
+          <div class="full"><label>Tipo de caixa</label><select id="cxTipo">${TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div>
+          <div><label>Unidade</label><select id="cxUnidade"><option value="caixas">Caixas</option></select></div>
+          <div><label>Quantidade</label><input id="cxQtd" type="number" min="1" value="1"></div>
+          <div class="full"><label>Valor total da compra</label><input id="cxValor" inputmode="decimal" placeholder="Ex.: 850,00"></div>
+          <div class="full"><label>Fornecedor</label><input id="cxFornecedor" placeholder="Opcional"></div>
+          <div><label>NF</label><input id="cxNF" placeholder="Opcional"></div>
+          <div><label>Observação</label><input id="cxObs" placeholder="Opcional"></div>
+        </div><div class="cost-safe">✓ Este lançamento é financeiro e não altera o estoque.</div><button class="cost-save" id="cxSalvar">REGISTRAR COMPRA</button>
+      </div></div>
+    </div>
+    <div class="cost-box"><div class="cost-history"><div class="cost-history-top"><h3>◷ Compras cadastradas</h3><span>Histórico financeiro</span></div><div style="overflow:auto"><table class="cost-table"><thead><tr><th>MÊS</th><th>TIPO</th><th>CAIXAS</th><th>VALOR</th><th>CUSTO/CAIXA</th><th>FORNECEDOR</th><th>NF</th><th>AÇÃO</th></tr></thead><tbody>
+      ${compras.map(c=>{const m=meta(c),q=Number(m?.caixas||0);return `<tr><td>${monthLabel(c.competencia)}</td><td>${m?.tipo||'—'}</td><td>${q||'—'}</td><td>${brl(c.valor)}</td><td>${q?brl(Number(c.valor||0)/q):'—'}</td><td>${esc(c.fornecedor||'—')}</td><td>${esc(c.nf||'—')}</td><td><button class="cxDel" data-id="${c.id}">Excluir</button></td></tr>`}).join('')||'<tr><td colspan="8" class="cost-empty">Nenhuma compra cadastrada.</td></tr>'}
+    </tbody></table></div></div></div>
+  </div>`;
+
+  const mes=$('#cxMes');if(mes)mes.value=monthKey;
+  $('#cxSalvar').onclick=async()=>{const competencia=$('#cxMes').value;if(!competencia)return alert('Informe o mês da compra.');const tipo=$('#cxTipo').value,q=Math.max(1,Number($('#cxQtd').value||1)),valor=parseMoney($('#cxValor').value);if(!valor)return alert('Informe o valor total da compra.');const fornecedor=$('#cxFornecedor').value.trim(),nf=$('#cxNF').value.trim(),nota=$('#cxObs').value.trim();const {error}=await supabase.from('compras_controle').insert({competencia:competencia+'-01',valor,fornecedor:fornecedor||null,nf:nf||null,observacao:encode({tipo,caixas:q,nota})});if(error)return alert('Não foi possível salvar: '+error.message);alert('Compra registrada. O estoque não foi alterado.');render(pane)};
+  pane.querySelectorAll('.cxDel').forEach(b=>b.onclick=async()=>{if(!confirm('Excluir esta compra? Isso não altera o estoque.'))return;const {error}=await supabase.from('compras_controle').delete().eq('id',b.dataset.id);if(error)return alert(error.message);render(pane)});
+}
+
+load();
