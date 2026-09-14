@@ -73,7 +73,7 @@ if(location.pathname.toLowerCase().startsWith('/admin')){
         if(!confirm(`Adicionar ${qtd} unidade(s) da Caixa ${tipo} ao estoque?`)) return;
         btn.disabled=true;btn.textContent='REGISTRANDO...';
         const textoObs=[obs,'Unidade de compra: unidade'].filter(Boolean).join(' • ');
-        const {error}=await supabase.from('entradas_estoque').insert({tipo_caixa:tipo,fardos:0,total_caixas:qtd,observacao:textoObs||null});
+        const {error}=await supabase.from('entradas_estoque').insert({tipo_caixa:tipo,fardos:1,total_caixas:qtd,observacao:textoObs||null});
         if(error){btn.disabled=false;btn.textContent='REGISTRAR ENTRADA';return alert('Não foi possível registrar: '+error.message)}
         alert('Entrada registrada e estoque atualizado por unidade.');
         location.reload();
