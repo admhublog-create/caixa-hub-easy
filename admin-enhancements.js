@@ -83,12 +83,12 @@ if(location.pathname.toLowerCase().startsWith('/admin')){
     const table=pane.querySelector('.table');
     if(table){
       const heads=table.querySelectorAll('th');
-      if(heads[3]) heads[3].textContent='Unidades';
+      if(heads[3] && heads[3].textContent!=='Unidades') heads[3].textContent='Unidades';
     }
   };
 
-  const observer=new MutationObserver(enhance);
-  observer.observe(document.documentElement,{subtree:true,childList:true});
+  const observer=new MutationObserver(()=>requestAnimationFrame(enhance));
+  observer.observe(document.body,{subtree:true,childList:true});
   addEventListener('DOMContentLoaded',enhance);
   setTimeout(enhance,100);
   setTimeout(enhance,600);
