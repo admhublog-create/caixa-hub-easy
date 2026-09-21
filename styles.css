@@ -15,3 +15,8 @@
 .bar{background:#edf2f2}.qr-head{background:linear-gradient(135deg,#2f434b,#526f79)}
 .qr-actions button{background:#526f79}.qr-actions a{background:#e9f0f1;color:#334b54}
 .brand{background:#526f79}.home h1,.success h2,.qrcard strong,.qr-note b{color:#263840}
+
+/* Corrige faixa superior remanescente terracota */
+.admin-head{background:linear-gradient(135deg,#edf3f4,#dce7e9)!important;border-bottom-color:#cbd9dc!important}
+.admin-head:before,.admin-head:after{color:#607b85!important}
+.admin-kicker{color:#526f79!important}.admin-head h1{color:#26343a!important}.admin-head p{color:#60777e!important}
