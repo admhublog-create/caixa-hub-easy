@@ -24,5 +24,5 @@ const head=document.querySelector('.admin-head');if(head){const h=head.querySele
 const fw=pane.querySelector('.forecast-wrap');if(fw){const h=fw.querySelector('.forecast-head h2');if(h)h.textContent='Resumo Geral';const p=fw.querySelector('.forecast-head p');if(p)p.textContent='Visão completa do seu estoque e das próximas ações';}
 const tabs=document.querySelector('.tabs');if(tabs){const labels={resumo:'Resumo',entradas:'Entradas',retiradas:'Retiradas',compras:'Compras',inventario:'Inventário',consumo:'Previsão e Planejamento',relatorios:'Relatórios',fita:'Fita Gomada'};tabs.querySelectorAll('.tab').forEach(b=>{if(labels[b.dataset.tab])b.textContent=labels[b.dataset.tab]})}
 }
-new MutationObserver(apply).observe(document.getElementById('app'),{subtree:true,childList:true});[0,200,600,1200].forEach(t=>setTimeout(apply,t));
+const root=document.getElementById('app');if(root)new MutationObserver(apply).observe(root,{subtree:true,childList:true});[0,200,600,1200].forEach(t=>setTimeout(apply,t));
 }
