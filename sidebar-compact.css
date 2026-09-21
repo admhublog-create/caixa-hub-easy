@@ -1,17 +1,7 @@
 @media (min-width:951px){
-.tabs{padding:24px 14px;gap:4px}
-.tab{font-size:13px!important;font-weight:600!important;line-height:1.25;padding:11px 12px 11px 40px!important;border-radius:10px;position:relative}
-.tab:before{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;text-align:center;font-size:13px;font-weight:500;color:#9b6559;opacity:.95}
-.tab[data-tab="resumo"]:before{content:"⌂"}
-.tab[data-tab="retiradas"]:before{content:"▣"}
-.tab[data-tab="entradas"]:before{content:"◫"}
-.tab[data-tab="inventario"]:before{content:"▥"}
-.tab[data-tab="consumo"]:before{content:"▥"}
-.tab[data-tab="compras"]:before{content:"▤"}
-.tab[data-tab="relatorios"]:before{content:"▤"}
-.tab[data-tab="fita"]:before{content:"▰"}
-#custosCaixasTab:before{content:"$"}
-.tab.active:before{color:#a85f52}
-.tabs:before{font-size:30px!important;padding-left:10px!important}
-.tabs:after{font-size:8px!important;line-height:1.35!important;letter-spacing:.1em!important;padding-left:10px!important;padding-right:10px!important}
+.tabs{padding:24px 14px!important;gap:5px!important}
+.tab{font-size:13px!important;font-weight:650!important;line-height:1.25;padding:12px 12px 12px 42px!important;border-radius:9px!important;position:relative!important}
+.tab:before{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;text-align:center;font-size:16px;font-weight:500;color:#d7f0f2!important;opacity:1!important}
+.tab[data-tab="resumo"]:before{content:"⌂"}.tab[data-tab="retiradas"]:before{content:"↔"}.tab[data-tab="entradas"]:before{content:"▣"}.tab[data-tab="inventario"]:before{content:"▦"}.tab[data-tab="consumo"]:before{content:"▥"}.tab[data-tab="compras"]:before{content:"▤"}.tab[data-tab="relatorios"]:before{content:"▧"}.tab[data-tab="fita"]:before{content:"◉"}#custosCaixasTab:before{content:"$"}
+.tab.active:before{color:#fff!important}.tabs:before{font-size:26px!important;padding:5px 10px 8px!important}.tabs:after{font-size:8px!important;line-height:1.4!important;letter-spacing:.08em!important;padding:0 10px 18px!important}
 }
