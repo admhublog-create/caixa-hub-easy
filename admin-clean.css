@@ -3,9 +3,9 @@
 body{background:var(--canvas)}
 .admin-wrap{min-height:100vh;background:var(--canvas)!important;padding:0 30px 48px 258px!important}
 .admin-shell{max-width:1440px;margin:auto}
-.tabs{position:fixed!important;inset:0 auto 0 0!important;width:230px!important;padding:26px 16px!important;background:linear-gradient(180deg,var(--hub-dark),#083e45)!important;border:0!important;box-shadow:8px 0 30px #173a4014!important;display:flex!important;flex-direction:column!important;gap:6px!important;overflow-y:auto}
-.tabs:before{content:"HUB"!important;color:#fff!important;font-size:30px!important;font-weight:950!important;letter-spacing:.09em!important;padding:4px 12px 2px!important}
-.tabs:after{content:"CAIXAS E FITA GOMADA"!important;order:-1!important;color:#b9d8dc!important;font-size:9px!important;font-weight:850!important;letter-spacing:.14em!important;padding:0 12px 18px!important;margin-top:50px!important;border-bottom:1px solid #ffffff1f!important}
+.tabs{position:fixed!important;inset:0 auto 0 0!important;width:230px!important;padding:24px 16px!important;background:linear-gradient(180deg,var(--hub-dark),#083e45)!important;border:0!important;box-shadow:8px 0 30px #173a4014!important;display:flex!important;flex-direction:column!important;gap:6px!important;overflow-y:auto}
+.tabs:before{content:"HUB\A CAIXAS E FITA GOMADA"!important;white-space:pre!important;display:block!important;color:#fff!important;font-size:27px!important;line-height:1.5!important;font-weight:950!important;letter-spacing:.08em!important;padding:3px 12px 18px!important;margin-bottom:10px!important;border-bottom:1px solid #ffffff1f!important}
+.tabs:after{display:none!important}
 .tab{border:0!important;background:transparent!important;color:#dcebed!important;padding:12px 13px!important;border-radius:10px!important;font-size:13px!important;font-weight:750!important;text-align:left!important;transition:.15s!important}
 .tab:hover{background:#ffffff10!important;color:#fff!important}.tab.active{background:#fff!important;color:var(--hub-dark)!important;box-shadow:0 5px 14px #001c2022!important}
 .admin-head{min-height:0!important;margin:0 -30px 26px!important;padding:27px 32px!important;background:#fff!important;border-bottom:1px solid var(--line)!important;box-shadow:0 2px 10px #213a4007!important;color:var(--ink)!important}
