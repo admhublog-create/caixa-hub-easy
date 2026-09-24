@@ -1,0 +1,1 @@
+import {Sidebar} from "@/components/layout/sidebar";import {Header} from "@/components/layout/header";import {InventoryPage} from "@/components/inventory/inventory-page";export default function Page(){return <div><Sidebar/><div className="min-h-screen lg:pl-64"><Header/><main className="p-5 lg:p-8"><InventoryPage/></main></div></div>}
