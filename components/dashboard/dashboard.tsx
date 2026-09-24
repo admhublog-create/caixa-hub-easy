@@ -2,7 +2,8 @@
 import {useEffect,useState} from "react";
 import {Box,Boxes,PackageOpen,History} from "lucide-react";
 import {KpiCard} from "@/components/ui/kpi-card";
-import {supabase} from "@/lib/supabase";\nimport {RecentWithdrawals} from "./recent-withdrawals";
+import {supabase} from "@/lib/supabase";
+import {RecentWithdrawals} from "./recent-withdrawals";
 const BASE={PP:1575,P:5550,M:1200}; type Kind=keyof typeof BASE;
 type W={tipo_caixa:Kind;total_caixas:number;created_at:string;responsavel?:string;fardos?:number}; type E=W;
 type I={data_inventario:string;created_at:string;pp_contado:number;p_contado:number;m_contado:number};
