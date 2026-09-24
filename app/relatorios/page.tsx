@@ -1,0 +1,1 @@
+import {Sidebar} from "@/components/layout/sidebar";import {Header} from "@/components/layout/header";import {ReportsPage} from "@/components/reports/reports-page";export default function Page(){return <div><Sidebar/><div className="min-h-screen lg:pl-64"><Header/><main className="p-5 lg:p-8"><ReportsPage/></main></div></div>}
