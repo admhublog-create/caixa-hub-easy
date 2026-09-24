@@ -1,1 +1,1 @@
-import {AppShell} from "@/components/layout/app-shell";import {ReportsPage} from "@/components/reports/reports-page";export default function Page(){return <AppShell><main className="p-4 sm:p-5 lg:p-8"><ReportsPage/></main></AppShell>
+import {AppShell} from "@/components/layout/app-shell";import {ReportsPage} from "@/components/reports/reports-page";export default function Page(){return <AppShell><main className="p-4 sm:p-5 lg:p-8"><ReportsPage/></main></AppShell>}
