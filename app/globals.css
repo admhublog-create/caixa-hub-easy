@@ -1,3 +1,21 @@
 @import "tailwindcss";
-:root{--background:#f3f4f6;--foreground:#1f2937;--card:#fff;--primary:#0f7a53;--primary-dark:#075f43;--primary-soft:#e9f7f0;--border:#e5e7eb;--muted:#6b7280;--radius:.75rem}
-*{border-color:var(--border)} body{margin:0;background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif} button,input{font:inherit}
+
+:root{
+  --background:#f6f8f7;
+  --foreground:#17211d;
+  --card:#ffffff;
+  --primary:#087a55;
+  --primary-dark:#04543d;
+  --primary-soft:#e8f5ef;
+  --sidebar:#063f32;
+  --sidebar-deep:#032f27;
+  --border:#e3e9e6;
+  --muted:#6c7772;
+  --radius:1rem;
+}
+*{box-sizing:border-box;border-color:var(--border)}
+html{background:var(--background)}
+body{margin:0;background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit}
+button,a{transition:all .18s ease}
+::selection{background:var(--primary-soft);color:var(--primary-dark)}
