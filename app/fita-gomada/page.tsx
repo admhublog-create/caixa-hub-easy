@@ -1,1 +1,1 @@
-import {Sidebar} from "@/components/layout/sidebar";import {Header} from "@/components/layout/header";import {TapePage} from "@/components/tape/tape-page";export default function Page(){return <div><Sidebar/><div className="min-h-screen lg:pl-64"><Header/><main className="p-5 lg:p-8"><TapePage/></main></div></div>}
+import {AppShell} from "@/components/layout/app-shell";import {TapePage} from "@/components/tape/tape-page";export default function Page(){return <AppShell><main className="p-4 sm:p-5 lg:p-8"><TapePage/></main></AppShell>}
