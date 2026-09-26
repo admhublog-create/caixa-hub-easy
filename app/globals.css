@@ -30,3 +30,12 @@ button,a{transition:all .18s ease}
 @keyframes hubWaveOne{from{transform:translate3d(-3%,0,0) rotate(-2deg) scaleX(1.02)}to{transform:translate3d(5%,14px,0) rotate(2deg) scaleX(1.08)}}
 @keyframes hubWaveTwo{from{transform:translate3d(5%,0,0) rotate(2deg) scaleX(1.08)}to{transform:translate3d(-4%,-12px,0) rotate(-2deg) scaleX(1.02)}}
 @media (prefers-reduced-motion:reduce){.hub-wave{animation:none!important}}
+
+.hub-header:after{content:"";position:absolute;right:22%;top:-110px;width:250px;height:210px;border:2px solid #e6edef;border-radius:50%;pointer-events:none}
+.hero-quote{font-size:24px;line-height:1.42;letter-spacing:.04em;color:#526f78;font-weight:300}
+.hero-quote strong{font-weight:800;letter-spacing:.08em}
+.hero-boxes{position:relative;width:210px;height:155px}
+.hero-boxes .box{position:absolute;display:block;background:linear-gradient(135deg,#d7a36b,#bd7f47);border:1px solid #aa713f;border-radius:3px;box-shadow:0 8px 14px #8c633333}
+.hero-boxes .box:after{content:"";position:absolute;left:44%;top:0;width:12%;height:100%;background:#d7b18166}
+.box-top{width:88px;height:64px;left:68px;top:3px}.box-left{width:92px;height:70px;left:22px;top:70px}.box-right{width:92px;height:70px;right:4px;top:70px}
+.tape-roll{position:absolute;left:0;bottom:3px;width:58px;height:58px;border:16px solid #c79259;border-radius:50%;background:#f5f7f7;box-shadow:0 6px 12px #8c633333}
