@@ -21,3 +21,12 @@ button,a{transition:all .18s ease}
 ::selection{background:var(--primary-soft);color:var(--primary-dark)}
 
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+
+.hub-hero{background:linear-gradient(120deg,#f8fbfb 0%,#edf3f4 48%,#f8fbfb 100%)}
+.hub-wave{position:absolute;left:-10%;width:120%;height:150px;border-radius:50%;pointer-events:none;opacity:.42;filter:blur(.2px);will-change:transform}
+.hub-wave-one{top:-70px;background:linear-gradient(90deg,transparent 0%,rgba(79,111,121,.20) 28%,rgba(48,75,84,.34) 55%,transparent 86%);animation:hubWaveOne 14s ease-in-out infinite alternate}
+.hub-wave-two{bottom:-92px;background:linear-gradient(90deg,transparent 4%,rgba(48,75,84,.18) 34%,rgba(97,119,126,.28) 68%,transparent 96%);animation:hubWaveTwo 18s ease-in-out infinite alternate}
+@keyframes hubWaveOne{from{transform:translate3d(-3%,0,0) rotate(-2deg) scaleX(1.02)}to{transform:translate3d(5%,14px,0) rotate(2deg) scaleX(1.08)}}
+@keyframes hubWaveTwo{from{transform:translate3d(5%,0,0) rotate(2deg) scaleX(1.08)}to{transform:translate3d(-4%,-12px,0) rotate(-2deg) scaleX(1.02)}}
+@media (prefers-reduced-motion:reduce){.hub-wave{animation:none!important}}
