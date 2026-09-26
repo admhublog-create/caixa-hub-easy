@@ -1,0 +1,1 @@
+import {AppShell} from "@/components/layout/app-shell";import {InventoryPage} from "@/components/inventory/inventory-page";export default function Page(){return <AppShell><main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8"><InventoryPage/></main></AppShell>}
