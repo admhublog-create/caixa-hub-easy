@@ -1,0 +1,1 @@
+import {TapeQrWithdrawal} from "@/components/tape/tape-qr-withdrawal";export default function Page(){return <TapeQrWithdrawal/>}
