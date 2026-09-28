@@ -55,3 +55,15 @@ button,a{transition:all .18s ease}
 /* Hero image: preserve approved asset; only improve presentation */
 .approved-image-frame{width:178px!important;height:112px!important;border-radius:0!important;background:transparent!important;overflow:hidden!important}
 .approved-image{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 34%!important;transform:scale(1.18)!important;transform-origin:center 38%!important}
+
+/* Crisp parcel artwork — CSS vector, no bitmap scaling */
+.hero-parcel-art{position:absolute!important;right:24px!important;top:50%!important;transform:translateY(-50%)!important;width:190px!important;height:118px!important;background:transparent!important}
+.hero-parcel-art .parcel{position:absolute;border:1px solid rgba(137,86,39,.34);border-radius:5px;background:linear-gradient(135deg,#d9a060 0%,#c88747 100%);box-shadow:0 7px 14px rgba(78,61,44,.10)}
+.hero-parcel-art .parcel:after{content:"";position:absolute;left:48%;top:0;width:14%;height:100%;background:rgba(237,188,126,.36)}
+.hero-parcel-art .parcel-top{width:58px;height:48px;right:38px;top:3px}
+.hero-parcel-art .parcel-left{width:61px;height:54px;right:87px;bottom:8px}
+.hero-parcel-art .parcel-mid{width:61px;height:54px;right:28px;bottom:8px}
+.hero-parcel-art .parcel-right{width:48px;height:54px;right:-18px;bottom:8px}
+.hero-parcel-art .tape-roll{position:absolute;left:4px;bottom:3px;width:57px;height:57px;border-radius:50%;background:linear-gradient(145deg,#d69a52,#c9863d);box-shadow:0 7px 14px rgba(78,61,44,.10);z-index:4}
+.hero-parcel-art .tape-roll span{position:absolute;inset:14px;border-radius:50%;background:#f5f7f7;box-shadow:inset 0 0 0 1px rgba(137,86,39,.16)}
+@media(max-width:1100px){.hero-parcel-art{right:12px!important;transform:translateY(-50%) scale(.88)!important;transform-origin:right center}}
