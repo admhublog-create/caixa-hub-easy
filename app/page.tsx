@@ -1,1 +1,1 @@
-import {AppShell} from "@/components/layout/app-shell";import {Dashboard} from "@/components/dashboard/dashboard";import {HeroBanner} from "@/components/hero-banner";export default function Page(){return <AppShell><main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8"><HeroBanner/><Dashboard/></main></AppShell>}
+import {redirect} from "next/navigation";export default function Page(){redirect("/retirada")}
