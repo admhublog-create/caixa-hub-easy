@@ -75,3 +75,8 @@ button,a{transition:all .18s ease}
 /* Approved hero photo cleanup: crop source screenshot artifacts without scaling blur */
 .approved-photo-wrap{right:30px!important;width:168px!important;height:112px!important;overflow:hidden!important;border-radius:12px!important;background:transparent!important}
 .approved-photo-exact{position:absolute!important;width:188px!important;height:126px!important;max-width:none!important;left:-10px!important;top:-8px!important;object-fit:cover!important;object-position:center 43%!important;transform:none!important;filter:none!important;clip-path:inset(0 0 12px 0 round 12px)!important}
+
+
+/* User-selected banner photos: always show the whole image, without crop or distortion */
+.approved-photo-wrap:has(.approved-photo-custom){width:168px!important;height:112px!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;background:transparent!important;border-radius:12px!important}
+.approved-photo-custom{position:static!important;width:100%!important;height:100%!important;max-width:100%!important;object-fit:contain!important;object-position:center!important;transform:none!important;filter:none!important;clip-path:none!important}
