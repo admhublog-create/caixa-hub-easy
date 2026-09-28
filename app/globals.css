@@ -48,3 +48,6 @@ button,a{transition:all .18s ease}
 .approved-photo .photo-right{width:65px;height:49px;left:96px;top:48px}
 .approved-photo .photo-tape{position:absolute;left:0;bottom:0;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#dfae70,#bf7d43);box-shadow:0 6px 12px rgba(91,60,30,.16)}
 .approved-photo .photo-tape span{position:absolute;inset:13px;border-radius:50%;background:#f7f9f9;box-shadow:inset 0 0 0 2px #d6dadb}
+
+.approved-image-frame{width:150px!important;height:104px!important;border-radius:12px;background:transparent}
+.approved-image{display:block;width:100%;height:116%;object-fit:cover;object-position:center 42%;transform:scale(1.06);transform-origin:center}
