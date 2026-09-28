@@ -1,0 +1,1 @@
+import {WithdrawalForm} from "@/components/withdrawals/withdrawal-form";export default function Page(){return <main className="min-h-screen bg-[#f5f7f7] px-4 py-8 sm:py-12"><WithdrawalForm initialKind="P" lockKind publicMode/></main>}
