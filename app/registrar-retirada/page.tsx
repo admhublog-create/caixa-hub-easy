@@ -1,1 +1,1 @@
-import {AppShell} from "@/components/layout/app-shell";import {WithdrawalForm} from "@/components/withdrawals/withdrawal-form";export default function Page(){return <AppShell><main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8"><WithdrawalForm/></main></AppShell>}
+import {WithdrawalForm} from "@/components/withdrawals/withdrawal-form";export default function Page(){return <main className="min-h-screen bg-[#f5f7f7] px-4 py-8 sm:py-12"><WithdrawalForm publicMode/></main>}
